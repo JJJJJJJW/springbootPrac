@@ -1,13 +1,12 @@
 package com.ace.springbootPrac.controller;
 
-import com.ace.springbootPrac.domain.Author;
 import com.ace.springbootPrac.dto.AuthorDto;
 import com.ace.springbootPrac.service.AuthorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class AuthorController {
@@ -21,7 +20,34 @@ public class AuthorController {
     @PostMapping(path = "/authors")
     public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto author){
 
-        return new ResponseEntity<>(authorService.createAuthor(author), HttpStatus.CREATED);
+        return new ResponseEntity<>(authorService.saveAuthor(author), HttpStatus.CREATED);
+
+    }
+
+    @GetMapping(path = "/authors")
+    public List<AuthorDto> listAuthors(){
+        return authorService.findAll();
+    }
+
+    @GetMapping(path = "/authors/{id}")
+    public ResponseEntity<AuthorDto> getAuthor(@PathVariable Long id){
+        return authorService.findAuthor(id)
+                .map(authorDto -> ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(authorDto))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PutMapping(path = "/authors/{id}")
+    public ResponseEntity<AuthorDto> fullUpdateAuthor(
+            @PathVariable Long id,
+            @RequestBody AuthorDto authorDto){
+
+        if(!authorService.isExists(id)){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(authorService.saveAuthor(authorDto),HttpStatus.OK);
 
     }
 

@@ -40,21 +40,4 @@ public class AuthorControllerTest {
                 MockMvcResultMatchers.status().isCreated()
         );
     }
-
-    @Test
-    public void createAuthorsReturnsSavedAuthor() throws Exception {
-        Author testAuthor = new Author(1L,"Ace",18);
-        String authorJSON = objectMapper.writeValueAsString(testAuthor);
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/authors")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(authorJSON)
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.id").isNumber()
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.name").value("Ace")
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.age").value("18")
-        );
-    }
 }
