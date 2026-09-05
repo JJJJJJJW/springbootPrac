@@ -24,6 +24,9 @@ public class BookDto {
         BookDto bookDto = new BookDto();
         bookDto.isbn = book.getIsbn();
         bookDto.title = book.getTitle();
+        if (book.getAuthor() != null) {
+            bookDto.author = AuthorDto.fromEntity(book.getAuthor());
+        }
 
         return bookDto;
     }

@@ -28,8 +28,8 @@ public class AuthorDto {
     public static Author fromDto(AuthorDto authorDto){
         Author author = new Author();
         author.setId(authorDto.getId());
-        author.setName(author.getName());
-        author.setAge(author.getAge());
+        author.setName(authorDto.getName());
+        author.setAge(authorDto.getAge());
 
         return author;
     }

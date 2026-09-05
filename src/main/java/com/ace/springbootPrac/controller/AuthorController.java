@@ -47,8 +47,28 @@ public class AuthorController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
+        authorDto.setId(id);
         return new ResponseEntity<>(authorService.saveAuthor(authorDto),HttpStatus.OK);
 
+    }
+
+    @PatchMapping(path = "/authors/{id}")
+    public ResponseEntity<AuthorDto> partialUpdateAuthor(
+            @PathVariable Long id,
+            @RequestBody AuthorDto authorDto
+            ){
+
+        if(!authorService.isExists(id)){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(authorService.partialUpdate(id, authorDto),HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/authors/{id}")
+    public ResponseEntity deleteAuthor(@PathVariable Long id){
+        authorService.delete(id);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
 }

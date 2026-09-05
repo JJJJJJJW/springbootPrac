@@ -1,7 +1,10 @@
 package com.ace.springbootPrac.controller;
 
+import com.ace.springbootPrac.domain.Book;
 import com.ace.springbootPrac.dto.BookDto;
 import com.ace.springbootPrac.service.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +34,9 @@ public class BookController {
     }
 
     @GetMapping(path = "/books")
-    public List<BookDto> listBooks(){
-        return bookService.findAll();
+    public Page<BookDto> listBooks(Pageable pageable){
+        Page<Book> books = bookService.findAll(pageable);
+        return books.map(BookDto::fromEntity);
     }
 
     @GetMapping(path = "/books/{isbn}")
@@ -42,6 +46,25 @@ public class BookController {
                         .status(HttpStatus.OK)
                         .body(BookDto)
                 ).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping(path = "books/{isbn}")
+    public ResponseEntity<BookDto> partialUpdateBook(
+            @PathVariable String isbn,
+            @RequestBody BookDto bookDto
+            ){
+
+           if(!bookService.isExists(isbn)){
+               return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+           }
+
+           return new ResponseEntity<>(bookService.partialUpdate(isbn, bookDto),HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/books/{isbn}")
+    public ResponseEntity deleteBook(@PathVariable String isbn){
+        bookService.delete(isbn);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
 }

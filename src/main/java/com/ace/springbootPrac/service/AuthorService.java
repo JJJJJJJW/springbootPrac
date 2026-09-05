@@ -13,4 +13,8 @@ public interface AuthorService {
     Optional<AuthorDto> findAuthor(Long id);
 
     boolean isExists(Long id);
+
+    AuthorDto partialUpdate(Long id, AuthorDto authorDto);
+
+    void delete(Long id);
 }
